@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timber Run Lodge — July 4th Itinerary</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Georgia, serif;
+    background: #1a2e1a;
+    color: #f5f0e8;
+    min-height: 100vh;
+  }
+  .header {
+    background: linear-gradient(135deg, #2d4a2d 0%, #1a2e1a 60%, #0d1f0d 100%);
+    padding: 28px 24px 20px;
+    text-align: center;
+    border-bottom: 2px solid #c8922a;
+  }
+  .header h1 { font-size: 1.8em; color: #f0c866; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+  .header h2 { font-size: 1.05em; color: #b8d4b8; font-weight: normal; font-style: italic; }
+  .badges { display: flex; justify-content: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+  .badge { background: rgba(200,146,42,0.2); border: 1px solid #c8922a; color: #f0c866; padding: 4px 12px; border-radius: 20px; font-size: 0.75em; letter-spacing: 1px; }
+  .nav { display: flex; background: #0d1f0d; border-bottom: 1px solid #2d4a2d; overflow-x: auto; }
+  .nav-btn {
+    flex: 1; padding: 13px 8px; background: none; border: none; color: #8ab48a;
+    cursor: pointer; font-size: 0.78em; text-align: center; border-bottom: 3px solid transparent;
+    transition: all 0.2s; white-space: nowrap; font-family: Georgia, serif;
+    text-transform: uppercase; letter-spacing: 0.5px; min-width: 90px; line-height: 1.4;
+  }
+  .nav-btn:hover { color: #f0c866; background: rgba(200,146,42,0.08); }
+  .nav-btn.active { color: #f0c866; border-bottom-color: #c8922a; background: rgba(200,146,42,0.12); }
+  .day-panel { display: none; }
+  .day-panel.active { display: block; }
+  .day-header {
+    background: linear-gradient(90deg, #2d4a2d, #1a2e1a);
+    padding: 16px 20px; border-left: 4px solid #c8922a;
+  }
+  .day-header h3 { font-size: 1.15em; color: #f0c866; letter-spacing: 1px; }
+  .day-header .day-sub { color: #8ab48a; font-size: 0.85em; margin-top: 3px; font-style: italic; }
+  .timeline { padding: 0 20px 28px; }
+  .block { display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.07); align-items: flex-start; }
+  .block:last-child { border-bottom: none; }
+  .time-col { min-width: 72px; text-align: right; padding-top: 2px; }
+  .time { font-size: 0.72em; color: #c8922a; font-weight: bold; letter-spacing: 0.5px; text-transform: uppercase; line-height: 1.3; }
+  .dot-col { display: flex; flex-direction: column; align-items: center; padding-top: 5px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: #c8922a; flex-shrink: 0; }
+  .dot.baby { background: #6baed6; }
+  .dot.food { background: #74c476; }
+  .dot.highlight { background: #f0c866; box-shadow: 0 0 10px rgba(240,200,102,0.7); }
+  .dot.relax { background: #9e9ac8; }
+  .line { width: 1px; flex: 1; background: rgba(200,146,42,0.2); min-height: 18px; margin-top: 4px; }
+  .block-content { flex: 1; }
+  .block-title { font-size: 0.97em; color: #f5f0e8; font-weight: bold; margin-bottom: 4px; }
+  .block-desc { font-size: 0.82em; color: #a8c4a8; line-height: 1.6; }
+  .tags { margin-top: 6px; }
+  .tag {
+    display: inline-block; background: rgba(200,146,42,0.15); border: 1px solid rgba(200,146,42,0.35);
+    color: #c8922a; padding: 1px 8px; border-radius: 10px; font-size: 0.68em;
+    margin-right: 4px; margin-bottom: 4px; letter-spacing: 0.3px; text-transform: uppercase;
+  }
+  .tag.baby-tag { background: rgba(107,174,214,0.15); border-color: rgba(107,174,214,0.4); color: #6baed6; }
+  .tag.food-tag { background: rgba(116,196,118,0.15); border-color: rgba(116,196,118,0.4); color: #74c476; }
+  .tag.star-tag { background: rgba(240,200,102,0.15); border-color: rgba(240,200,102,0.4); color: #f0c866; }
+  .tag.relax-tag { background: rgba(158,154,200,0.15); border-color: rgba(158,154,200,0.4); color: #9e9ac8; }
+  .info-box {
+    border-radius: 8px; padding: 11px 16px; margin: 10px 20px 4px; font-size: 0.81em; line-height: 1.6;
+  }
+  .tip-box { background: rgba(200,146,42,0.1); border: 1px solid rgba(200,146,42,0.3); color: #e0d4b0; }
+  .tip-box strong { color: #f0c866; }
+  .note-box { background: rgba(107,174,214,0.1); border: 1px solid rgba(107,174,214,0.3); color: #c8dce8; }
+  .note-box strong { color: #6baed6; }
+  .fireworks-banner {
+    background: linear-gradient(90deg, #1a0a3a, #2d1060, #1a0a3a);
+    border: 1px solid #7b2d8b; border-radius: 8px;
+    padding: 13px 18px; margin: 6px 20px 10px; text-align: center;
+  }
+  .fireworks-banner p { color: #e8c4f0; font-size: 0.85em; line-height: 1.6; }
+  .fireworks-banner strong { color: #f0c866; font-size: 1.05em; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🏕️ Timber Run Lodge</h1>
+  <h2>Deep Creek Lake &nbsp;·&nbsp; July 3–6, 2026</h2>
+  <div class="badges">
+    <span class="badge">🎆 4th of July</span>
+    <span class="badge">4 Couples</span>
+    <span class="badge">👶 2-yr &amp; 8-mo</span>
+    <span class="badge">6 Beds · Hot Tub · Fire Pit</span>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="showDay(0)">Thu Jul 3<br>🚗 Arrive</button>
+  <button class="nav-btn" onclick="showDay(1)">Fri Jul 4<br>🎆 Fourth</button>
+  <button class="nav-btn" onclick="showDay(2)">Sat Jul 5<br>⛰️ Adventure</button>
+  <button class="nav-btn" onclick="showDay(3)">Sun Jul 6<br>🏠 Depart</button>
+</div>
+
+<!-- DAY 1 -->
+<div class="day-panel active" id="day0">
+  <div class="day-header">
+    <h3>Thursday, July 3 — Arrival Night</h3>
+    <div class="day-sub">Settle in, fire up the grill, ease into the mountains</div>
+  </div>
+  <div class="note-box info-box"><strong>👶 Baby tip:</strong> The lower level has a bath with tub — ideal for babies. The lower level den is separate from the upper bedrooms so night wakings won't disturb everyone.</div>
+  <div class="timeline">
+    <div class="block">
+      <div class="time-col"><div class="time">4:00 PM</div></div>
+      <div class="dot-col"><div class="dot"></div><div class="line"></div></div>
+      <div class="block-content">
+        <div class="block-title">🏠 Check-In &amp; Explore the Lodge</div>
+        <div class="block-desc">Claim rooms, let the kids explore. Use the <strong>second gate</strong> — buttons on the first gate stick per guest reviews. The gated Biltmore community is private and quiet.</div>
+      </div>
+    </div>
+    <div class="block">
+      <div class="time-col"><div class="time">4:30 PM</div></div>
+      <div class="dot-col"><div class="dot food"></div><div class="line"></div></div>
+      <div class="block-content">
+        <div class="block-title">🛒 Grocery Run — Shop 'N Save (1.9 mi)</div>
+        <div class="block-desc">Two full-size fridges at the lodge means no cramming. Stock up on everything including firewood for the fire pit (not provided) and K-cups (machine is there, pods aren't).</div>
+        <div class="tags"><span class="tag food-tag">Food Stop</span><span class="tag baby-tag">Stock Baby Supplies</span></div>
+      </div>
+    </div>
+    <div class="block">
+      <div class="time-col"><div class="time">6:30 PM</div></div>
+      <div class="dot-col"><div class="dot food"></div><div class="line"></div></div>
+      <div class="block-content">
+        <div class="block-title">🔥 Welcome BBQ on the Deck</div>
+        <div class="block-desc">Fire up one of the two gas grills. Burgers, hot dogs, corn on the cob — keep it easy. The outdoor dining table and deck set the perfect tone. The 2-year-old can roam while adults unwind from the drive.</div>
+        <div class="tags"><span class="tag food-tag">Dinner at Lodge</span><span class="tag baby-tag">Toddler-Friendly</span></div>
+      </div>
+    </div>
+    <div class="block">
+      <div class="time-col"><div class="time">8:00 PM</div></div>
+      <div class="dot-col"><div class="dot star"></div><div class="line"></div></div>
+      <div class="block-content">
+        <div class="block-title">🎵 Broadford Lake Fireworks — Oakland (Optional)</div>
+        <div class="block-desc">Garrett County Concert Band starts at 7:30 PM with fireworks over Broadford Lake at ~9:30 PM. A great pre-Fourth warmup show that wraps earlier than the main July 4th display — easier on the little ones.</div>
+        <div class="tags"><span class="tag star-tag">⭐ Bonus Show</span><span class="tag baby-tag">Earlier Night</span></div>
+      </div>
+    </div>
+    <div class="block">
+      <div class="time-col"><div class="time">9:30 PM</div></div>
+      <div class="dot-col"><div class="dot relax"></div></div>
+      <div class="block-content">
+        <div class="block-title">♨️ Hot Tub Night Cap + Pool Table</div>
+        <div class="block-desc">After babies go down, adults rotate into the hot tub — fits 8 comfortably per reviews. Pool table in the lower level for the non-hot-tub crew. First real night of the trip.</div>
+        <div class="tags"><span class="tag relax-tag">Adults</span><span class="tag">Pool Table</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DAY 2 -->
+<div class="day-panel" id="day1">
+  <div class="day-header">
+    <h3>Friday, July 4 — Independence Day 🎆</h3>
+    <div class="day-sub">Lake, free concert, fireworks over the mountain</div>
+  </div>
+  <div class="note-box info-box"><strong>👶 Baby planning:</strong> Fireworks start at 9:30 PM — late for a 2-year-old. Consider having one couple stay back with sleeping kids. Bring ear protection for anyone watching.</div>
+  <div class="timeline">
+    <div class="block">
+      <div class="time-col"><div class="time">8:30 AM</div></div>
+      <div class="dot-col"><div class="dot food"></div><div class="line"></div></div>
+      <div class="block-content">
+        <div class="block-title">☕ Big Lodge Breakfast</div>
+        <div class="block-desc">Everyone cooks together — pancakes, eggs, bacon. Both a drip and single-cup coffee maker available. Let the babies set the pace for a relaxed start.</div>
+        <div class="tags"><span class="tag food-tag">At Lodge</span></div>
+      </div>
+    </div>
+    <div class="block">
+      <div class="time-col"><div class="time">10:30 AM</div></div>
+      <div class="dot-col"><div class="dot"></div><div class="line"></div></div>
+      <div class="block-content">
+        <div class="block-title">🎡 Monkey Business Adventure Park (1 mi)</div>
+        <div class="block-desc">Outdoor adventure park just 1 mile away. Great for the toddler to watch and cheer on the adults. A fun morning activity before the heat of the afternoon sets in.</div>
+        <div class="tags"><span class="tag baby-tag">Toddler-Friendly</span><span class="tag">1 mile away</span></div>
+      </div>
+    </div>
+    <div class="block">
+      <div class="time-col"><div class="time">12:30 PM</div></div>
+      <div class="dot-col"><div class="dot food"></div><div class="line"></div></div>
+      <div class="block-content">
+        <div class="block-title">🍕 Lunch — Pick Up Pizza, Eat at Lodge</div>
+        <div class="block-desc">Deep Creek Pizza or Ledo Pizza both under 2 miles. Grab it and head back — works perfectly with baby nap time on the deck.</div>
+        <div class="tags"><span class="tag food-tag">Lunch</span><span class="tag baby-tag">Nap Window</span></div>
+      </div>
+    </div>
+    <div class="block">
+      <div class="time-col"><div class="time">2:00 PM</div></div>
+      <div class="dot-col"><div class="dot baby"></div><div class="line"></div></div>
+      <div class="block-content">
+        <div class="block-title">🏖️ Deep Creek Lake State Park Beach (3.75 mi)</div>
+        <div class="block-desc">Public sandy beach — perfect for the 2-year-old in shallow water, baby can enjoy the shade. Couples relax and swim. Arrive by 2 PM to get a good spot before the July 4th holiday crowd builds.</div>
+        <div class="tags"><span class="tag baby-tag">Sandy Beach</span><span class="tag baby-tag">Shallow Water</span><span class="tag star-tag">Best Daytime Activity</span></div>
+      </div>
+    </div>
+    <div class="block">
+      <div class="time-col"><div class="time">5:00 PM</div></div>
+      <div class="dot-col"><div class="dot food"></div><div class="line"></div></div>
+      <div class="block-content">
+        <div class="block-title">🍖 Early Patriotic BBQ Dinner at Lodge</div>
+        <div class="block-desc">Head back, clean up, eat early. Red, white &amp; blue spread — watermelon, potato salad, ribs or steaks on the grill. Important to eat before heading out so babies aren't hungry during the long evening.</div>
+        <div class="tags"><span class="tag food-tag">Dinner</span><span class="tag baby-tag">Early for Kids</span></div>
+      </div>
+    </div>
+    <div class="block">
+      <div class="time-col"><div class="time">6:00 PM</div></div>
+      <div class="dot-col"><div class="dot highlight"></div><div class="line"></div></div>
+      <div class="block-content">
+        <div class="block-title">🎸 Stage Wisp Free Concert — Bachelor Boys Band</div>
+        <div class="block-desc">Free outdoor concert at Wisp Resort — under 1 mile from the lodge. Bring lawn chairs and blankets. Food &amp; drinks available on the outdoor deck. Arrive by 6 PM to secure a great lawn spot before it fills up.</div>
+        <div class="tags"><span class="tag star-tag">⭐ Don't Miss</span><span class="tag">Free</span><span class="tag">&lt;1 mile away</span><span class="tag baby-tag">Bring ear muffs</span></div>
+      </div>
+    </div>
+    <div class="block">
+      <div class="time-col"><div class="time">9:30 PM</div></div>
+      <div class="dot-col"><div class="dot highlight"></div></div>
+      <div class="block-content">
+        <div class="block-title">🎆 Fire on the Mountain Fireworks!</div>
+        <div class="block-desc">Launched from the Bear Claw Tube Park at Wisp Resort, visible across Deep Creek Lake. Prime viewing from McHenry Cove — fireworks reflect beautifully off the water. Garrett College lawn is another great family spot. Rain date: July 5th.</div>
+        <div class="tags"><span class="tag star-tag">⭐ Highlight of the Trip</span><span class="tag">~9:30 PM</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="fireworks-banner">
+    <p><strong>🎆 Fire on the Mountain</strong><br>
+    Wisp Resort · July 4 · Fireworks ~9:30 PM<br>
+    Free Stage Wisp Concert 6:30–9:30 PM · Bring blankets &amp; lawn chairs · Under 1 mile from lodge</p>
+  </div>
+</div>
+
+<!-- DAY 3 -->
+<div class="day-panel" id="day2">
+  <div class="day-header">
+    <h3>Saturday, July 5 — Adventure &amp; Relaxation</h3>
+    <div class="day-sub">Waterfalls in the morning, lake in the afternoon, fire pit at night</div>
+  </div>
+  <div class="note-box info-box"><strong>👶 Split-day strategy:</strong> Works great if one or two couples do the adventure activities while others stay at the lodge with babies. Rotate for the afternoon boat so everyone gets time on the water.</div>
+  <div class="timeline">
+    <div class="block">
+      <div class="time-col"><div class="time">9:00 AM</div></div>
+      <div class="dot-col"><div class="dot food"></div><div class="line"></div></div>
+      <div class="block-content">
+        <div class="block-title">🍩 Donut Run — Glazed &amp; Confused Donuts (1.8 mi)</div>
+        <div class="block-desc">A Deep Creek fan favorite, less than 2 miles away. Bring back a box and pair with the drip coffee maker for a slow, easy recovery morning after the late night.</div>
+        <div class="tags"><span class="tag food-tag">Breakfast</span></div>
+      </div>
+    </div>
+    <div class="block">
+      <div class="time-col"><div class="time">10:30 AM</div></div>
+      <div class="dot-col"><div class="dot highlight"></div><div class="line"></div></div>
+      <div class="block-content">
+        <div class="block-title">🌊 Swallow Falls State Park — Waterfall Hike (4 mi)</div>
+        <div class="block-desc">One of Maryland's most beautiful spots — multiple waterfalls including Muddy Creek Falls, the state's tallest. The main loop is ~1 mile, relatively flat. The 2-year-old can walk or be carried; the 8-month-old is perfect in a baby carrier. Arrive early — it fills up fast on holiday weekends.</div>
+        <div class="tags"><span class="tag star-tag">⭐ Must-See</span><span class="tag baby-tag">Carrier-Friendly</span><span class="tag">4 miles away</span></div>
+      </div>
+    </div>
+    <div class="block">
+      <div class="time-col"><div class="time">1:00 PM</div></div>
+      <div class="dot-col"><div class="dot food"></div><div class="line"></div></div>
+      <div class="block-content">
+        <div class="block-title">🍺 Lunch — Short Story Brewing (1.4 mi)</div>
+        <div class="block-desc">Great food and craft beer just 1.4 miles from the lodge — perfect post-hike stop. Mountain State Brewing (~3 mi) is another excellent option. Or grab food and head back to the lodge deck.</div>
+        <div class="tags"><span class="tag food-tag">Lunch</span><span class="tag">Craft Beer</span></div>
+      </div>
+    </div>
+    <div class="block">
+      <div class="time-col"><div class="time">3:00 PM</div></div>
+      <div class="dot-col"><div class="dot highlight"></div><div class="line"></div></div>
+      <div class="block-content">
+        <div class="block-title">⛵ Pontoon Boat Rental — Deep Creek Marina (1.7 mi)</div>
+        <div class="block-desc">A pontoon is the perfect baby-friendly boat — flat, spacious, shaded. All 4 couples fit comfortably. Cruise the lake, find a quiet cove, let the toddler splash at the shore. <strong>Book this as soon as possible</strong> — July 4th weekend boats are the first thing to sell out.</div>
+        <div class="tags"><span class="tag star-tag">⭐ Book NOW</span><span class="tag baby-tag">Pontoon = Baby-Friendly</span><span class="tag">1.7 miles</span></div>
+      </div>
+    </div>
+    <div class="block">
+      <div class="time-col"><div class="time">5:30 PM</div></div>
+      <div class="dot-col"><div class="dot relax"></div><div class="line"></div></div>
+      <div class="block-content">
+        <div class="block-title">🔥 Lodge Chill — Hot Tub &amp; Fire Pit</div>
+        <div class="block-desc">Return for showers, baby baths in the lower level tub. Adults rotate through the hot tub. Light the outdoor wood fire pit as the sun sets over the mountains. S'mores are mandatory (bring supplies).</div>
+        <div class="tags"><span class="tag relax-tag">♨️ Hot Tub</span><span class="tag relax-tag">🔥 Fire Pit</span><span class="tag baby-tag">Baby Bath Time</span></div>
+      </div>
+    </div>
+    <div class="block">
+      <div class="time-col"><div class="time">7:30 PM</div></div>
+      <div class="dot-col"><div class="dot food"></div><div class="line"></div></div>
+      <div class="block-content">
+        <div class="block-title">🥩 Dinner Out — Pine Lodge Steakhouse or Black Bear Tavern (1.3 mi)</div>
+        <div class="block-desc">Both are 1.3 miles from the lodge. Pine Lodge is a classic Appalachian steakhouse experience. Black Bear Tavern has a more casual pub vibe. Call ahead — reservations recommended on holiday weekend.</div>
+        <div class="tags"><span class="tag food-tag">Dinner Out</span><span class="tag star-tag">Reserve Ahead</span></div>
+      </div>
+    </div>
+    <div class="block">
+      <div class="time-col"><div class="time">10:00 PM</div></div>
+      <div class="dot-col"><div class="dot relax"></div></div>
+      <div class="block-content">
+        <div class="block-title">🎱 Pool Table &amp; Card Games</div>
+        <div class="block-desc">End the night in the lower level game area — pool table, big TV, sleeper sofa. The classic cabin game night energy. Best hang of the trip.</div>
+        <div class="tags"><span class="tag">Pool Table</span><span class="tag">Lower Level</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DAY 4 -->
+<div class="day-panel" id="day3">
+  <div class="day-header">
+    <h3>Sunday, July 6 — Slow Morning &amp; Head Home</h3>
+    <div class="day-sub">Checkout 10 AM — one last coffee, pack up, carry the memories out</div>
+  </div>
+  <div class="tip-box info-box"><strong>⚠️ Checkout is 10:00 AM.</strong> Pack Saturday night. Assign two couples to pack/strip beds while two couples handle baby distraction duty — then rotate.</div>
+  <div class="timeline">
+    <div class="block">
+      <div class="time-col"><div class="time">7:30 AM</div></div>
+      <div class="dot-col"><div class="dot food"></div><div class="line"></div></div>
+      <div class="block-content">
+        <div class="block-title">☕ Last Deck Coffee</div>
+        <div class="block-desc">Simple breakfast — coffee, bagels, or leftover pastries. Sit on the deck one final time. Let the kids play while everyone sips slowly and takes in that mountain view.</div>
+        <div class="tags"><span class="tag food-tag">Breakfast</span></div>
+      </div>
+    </div>
+    <div class="block">
+      <div class="time-col"><div class="time">8:30 AM</div></div>
+      <div class="dot-col"><div class="dot"></div><div class="line"></div></div>
+      <div class="block-content">
+        <div class="block-title">🧹 Pack &amp; Clean Up</div>
+        <div class="block-desc">Rotate duties. Note: fire pit ashes must be completely cool before leaving. Washer/dryer available on the lower level for any baby laundry. Leave the lodge as you found it.</div>
+        <div class="tags"><span class="tag baby-tag">Baby Distraction Duty</span></div>
+      </div>
+    </div>
+    <div class="block">
+      <div class="time-col"><div class="time">9:45 AM</div></div>
+      <div class="dot-col"><div class="dot"></div><div class="line"></div></div>
+      <div class="block-content">
+        <div class="block-title">📸 Group Photo + Contactless Checkout</div>
+        <div class="block-desc">No key drop needed — contactless checkout per Railey Vacations policy. Snap that group photo on the deck or at the lodge entrance before loading up the cars.</div>
+        <div class="tags"><span class="tag">Contactless</span><span class="tag">By 10 AM</span></div>
+      </div>
+    </div>
+    <div class="block">
+      <div class="time-col"><div class="time">10:15 AM</div></div>
+      <div class="dot-col"><div class="dot food"></div></div>
+      <div class="block-content">
+        <div class="block-title">🍦 Sweet Send-Off — Lakeside Creamery or Katie's Ice Cream</div>
+        <div class="block-desc">On your way out — Lakeside Creamery (3 mi) or Katie's Ice Cream (2.4 mi). The perfect finale for the 2-year-old and a sweet punctuation mark on the trip before the drive back to Maryland.</div>
+        <div class="tags"><span class="tag food-tag">Treat</span><span class="tag baby-tag">Toddler Approved</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="tip-box info-box" style="margin-top:8px;">
+    <strong>📋 Book These Before You Go:</strong><br><br>
+    ⛵ <strong>Pontoon boat rental</strong> — Deep Creek Marina or Silver Tree Marine (book ASAP!)<br>
+    🥩 <strong>Saturday dinner</strong> — Pine Lodge Steakhouse or Black Bear Tavern (call ahead)<br>
+    👂 <strong>Baby ear protection</strong> for the fireworks<br>
+    🪑 <strong>Lawn chairs &amp; blankets</strong> for the Stage Wisp concert<br>
+    🪵 <strong>Firewood</strong> for the fire pit (not provided by the lodge)<br>
+    ☕ <strong>K-cups</strong> — coffee maker is there, pods are not<br>
+    🎒 <strong>Baby carrier</strong> for Swallow Falls hike
+  </div>
+</div>
+
+<script>
+  function showDay(index) {
+    document.querySelectorAll('.day-panel').forEach(function(p, i) {
+      p.classList.toggle('active', i === index);
+    });
+    document.querySelectorAll('.nav-btn').forEach(function(b, i) {
+      b.classList.toggle('active', i === index);
+    });
+  }
+</script>
+</body>
+</html>
